@@ -141,3 +141,44 @@ Save notebook changes, stop JupyterLab with `Ctrl+C` in its terminal, and deacti
 ```bash
 deactivate
 ```
+
+## 7. Reading notes for `04_first_ml_model.ipynb`
+
+### First ML model: classification with scikit-learn
+
+#### Example 3: Compare with logistic regression
+
+A simpler linear model gives us a baseline to compare with the random forest.
+
+#### Example 4: Tune a random forest with GridSearchCV
+
+**Model settings**
+
+A random forest combines many decision trees and uses their majority prediction (classification) or average prediction (regression). It is controlled by **hyperparameters**, which are settings chosen before training. Two important random forest hyperparameters are:
+
+- `n_estimators`: the number of trees in the forest.
+- `max_depth`: the maximum depth of each tree. A deeper tree can learn more detail, but it may overfit by memorizing the training data.
+
+**Hyperparameter tuning**
+
+Hyperparameter tuning searches for settings that perform well on unseen data. `GridSearchCV` tries every combination supplied in `param_grid`. Here it will test:
+
+- 2 values for `n_estimators`: 50 or 100
+- 3 values for `max_depth`: `None`, 5, or 10
+- 6 combinations in total
+
+The `clf__` prefix means that the setting belongs to the pipeline step named `clf`, not to the preprocessing step.
+
+**Cross-validation**
+
+For every combination, 5-fold cross-validation divides the training data into 5 parts. The model trains on 4 parts and validates on the remaining part. This repeats 5 times, so 30 model fits are performed (6 combinations x 5 folds). The combination with the highest mean validation accuracy becomes the best model.
+
+`search.fit(...)` automatically retrains the best combination on the complete training set. `search.best_estimator_` is therefore ready to evaluate on the test set.
+
+Finally, measure the selected model on data it did not use during tuning.
+
+#### Exercises
+
+1. Which model is easier to interpret: logistic regression or random forest?
+2. Add features (family size, title) and measure the change.
+3. Print the test-set classification report for `search.best_estimator_`.
